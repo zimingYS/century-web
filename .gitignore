@@ -1,0 +1,10 @@
+.vscode/
+.idea/
+web/node_modules
+web/dist
+/target
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.log
