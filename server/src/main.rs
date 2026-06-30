@@ -1,10 +1,15 @@
 use axum::*;
 use server::routes;
+use server::state::{AppState, SharedAppState};
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
+    // 创建全局共享状态。
+    let state: SharedAppState = Arc::new(AppState { app_name: "TaskFlow".to_string() });
+
     // 创建网站路由
-    let app = Router::new().merge(routes::user::routes());
+    let app = Router::new().merge(routes::user::routes()).with_state(state);
 
     // 监听端口
     let linstener = tokio::net::TcpListener::bind(("127.0.0.1", 3000)).await.unwrap();

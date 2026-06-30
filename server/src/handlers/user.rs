@@ -1,6 +1,24 @@
-use crate::models::user::LoginRequest;
+use crate::models::user::{LoginRequest, LoginResponse};
+use crate::state::SharedAppState;
 use axum::extract::*;
 
-pub async fn login(Json(request): Json<LoginRequest>) -> String {
-    format!("Login: {}", request.username)
+/// 处理用户登录请求。
+///
+/// # 请求
+/// POST /login
+///
+/// # Body
+/// {
+///     "username": "...",
+///     "password": "..."
+/// }
+///
+/// 当前阶段仅返回用户名，后续将接入数据库、
+/// 密码校验以及 JWT Token 生成逻辑。
+pub async fn login(
+    State(state): State<SharedAppState>,
+    Json(request): Json<LoginRequest>,
+) -> Json<LoginResponse> {
+    println!("App Name: {}", state.app_name);
+    Json(LoginResponse { id: 1, username: request.username })
 }
