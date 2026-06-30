@@ -1,20 +1,20 @@
+use sqlx::PgPool;
 use std::sync::Arc;
 
-/// 全局应用状态。
+/// 全局共享状态。
 ///
-/// 所有需要跨请求共享的资源，都应该放入 AppState。
-/// 例如：
+/// 所有需要跨请求共享的资源都放在这里，例如：
 ///
 /// - 数据库连接池
 /// - Redis 客户端
-/// - JWT 配置
-/// - 应用配置
+/// - 配置对象
+/// - 日志组件
 ///
 /// AppState 在程序启动时创建一次，
-/// 随后共享给所有 Handler。
+/// 然后通过 Arc 在整个应用中共享。
 pub struct AppState {
-    /// 当前应用名称
-    pub app_name: String,
+    /// 数据库连接池
+    pub db: PgPool,
 }
 
 /// AppState 的共享类型。

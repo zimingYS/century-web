@@ -1,7 +1,7 @@
 use crate::handlers::user::login;
+use crate::state::SharedAppState;
 use axum::Router;
 use axum::routing::*;
-use crate::state::SharedAppState;
 
 /// 注册所有与用户相关的 HTTP 路由。
 ///

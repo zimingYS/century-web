@@ -16,9 +16,8 @@ use axum::extract::*;
 /// 当前阶段仅返回用户名，后续将接入数据库、
 /// 密码校验以及 JWT Token 生成逻辑。
 pub async fn login(
-    State(state): State<SharedAppState>,
+    State(_state): State<SharedAppState>,
     Json(request): Json<LoginRequest>,
 ) -> Json<LoginResponse> {
-    println!("App Name: {}", state.app_name);
     Json(LoginResponse { id: 1, username: request.username })
 }

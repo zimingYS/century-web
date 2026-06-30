@@ -1,12 +1,20 @@
 use axum::*;
+use server::database::connection::create_pool;
 use server::routes;
 use server::state::{AppState, SharedAppState};
 use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
-    // 创建全局共享状态。
-    let state: SharedAppState = Arc::new(AppState { app_name: "TaskFlow".to_string() });
+    // 获取数据库链接
+    dotenvy::dotenv().ok();
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL 未配置");
+    // 构造连接池
+    let pool = create_pool(&database_url).await.expect("数据库连接失败");
+    println!("数据库连接成功");
+
+    // 创建全局共享状态
+    let state: SharedAppState = Arc::new(AppState { db: pool });
 
     // 创建网站路由
     let app = Router::new().merge(routes::user::routes()).with_state(state);
