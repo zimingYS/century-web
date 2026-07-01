@@ -1,5 +1,6 @@
 use crate::errors::AppError;
 use crate::models::user::LoginRequest;
+use crate::services::user_service::UserService;
 use crate::state::SharedAppState;
 use axum::extract::*;
 
@@ -20,10 +21,18 @@ pub async fn login(
     State(state): State<SharedAppState>,
     Json(request): Json<LoginRequest>,
 ) -> Result<String, AppError> {
-    let user = state.user_service.find_by_username(&request.username).await?;
+    // 查询用户
+    let user = state
+        .user_service
+        .find_by_username(&request.username)
+        .await?
+        .ok_or_else(|| AppError::NotFound(format!("用户 {} 不存在", request.username)))?;
 
-    match user {
-        Some(user) => Ok(format!("找到用户：{}", user.username)),
-        None => Err(AppError::NotFound(format!("用户 {} 不存在", request.username))),
+    // 校验密码
+    let password_valid = UserService::verify_password(&request.password, &user.password_hash)?;
+    if !password_valid {
+        return Err(AppError::Internal("用户名或密码错误".to_string()));
     }
+
+    Ok(format!("登录成功:{}", &request.username))
 }

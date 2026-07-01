@@ -12,6 +12,8 @@ pub enum AppError {
     Internal(String),
     /// 数据库错误
     Database(sqlx::Error),
+    /// 认证/授权失败
+    Unauthorized(String),
 }
 
 impl From<sqlx::Error> for AppError {
@@ -41,6 +43,9 @@ impl IntoResponse for AppError {
                 Json(ErrorResponse { error: error.to_string() }),
             )
                 .into_response(),
+            AppError::Unauthorized(message) => {
+                (StatusCode::UNAUTHORIZED, Json(ErrorResponse { error: message })).into_response()
+            }
         }
     }
 }
