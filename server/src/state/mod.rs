@@ -1,20 +1,16 @@
-use sqlx::PgPool;
+use crate::services::user_service::UserService;
 use std::sync::Arc;
 
 /// 全局共享状态。
 ///
-/// 所有需要跨请求共享的资源都放在这里，例如：
+/// 在程序启动时统一初始化，
+/// 然后通过 Arc 在整个应用生命周期中共享。
 ///
-/// - 数据库连接池
-/// - Redis 客户端
-/// - 配置对象
-/// - 日志组件
-///
-/// AppState 在程序启动时创建一次，
-/// 然后通过 Arc 在整个应用中共享。
+/// AppState 不直接保存数据库连接，
+/// 而是保存各业务 Service。
 pub struct AppState {
-    /// 数据库连接池
-    pub db: PgPool,
+    /// 用户业务服务
+    pub user_service: UserService,
 }
 
 /// AppState 的共享类型。

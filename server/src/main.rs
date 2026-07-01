@@ -1,6 +1,8 @@
 use axum::*;
 use server::database::connection::create_pool;
+use server::repositories::user_repository::UserRepository;
 use server::routes;
+use server::services::user_service::UserService;
 use server::state::{AppState, SharedAppState};
 use std::sync::Arc;
 
@@ -13,8 +15,12 @@ async fn main() {
     let pool = create_pool(&database_url).await.expect("数据库连接失败");
     println!("数据库连接成功");
 
+    // 创建用户服务
+    let user_repository = UserRepository::new(pool);
+    let user_service = UserService::new(user_repository);
+
     // 创建全局共享状态
-    let state: SharedAppState = Arc::new(AppState { db: pool });
+    let state: SharedAppState = Arc::new(AppState { user_service });
 
     // 创建网站路由
     let app = Router::new().merge(routes::user::routes()).with_state(state);

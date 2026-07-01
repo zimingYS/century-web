@@ -5,4 +5,5 @@
 //! - response：接口响应 DTO
 //! - entity：数据库实体
 
+pub mod entity;
 pub mod user;
