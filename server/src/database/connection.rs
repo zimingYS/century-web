@@ -13,6 +13,6 @@ pub async fn create_pool(database_url: &str) -> Result<PgPool, sqlx::Error> {
         // 最大连接数
         .max_connections(5)
         // 建立数据库连接
-        .connect(&database_url)
+        .connect(database_url)
         .await
 }
