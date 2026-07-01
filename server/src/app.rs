@@ -1,10 +1,10 @@
-use std::sync::Arc;
-use axum::Router;
 use crate::database::connection::create_pool;
 use crate::repositories::user_repository::UserRepository;
 use crate::routes;
 use crate::services::user_service::UserService;
 use crate::state::{AppState, SharedAppState};
+use axum::Router;
+use std::sync::Arc;
 
 /// 构建整个应用。
 ///
