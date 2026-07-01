@@ -10,7 +10,7 @@ pub struct LoginRequest {
     pub username: String,
 
     /// 用户密码（明文仅存在于请求阶段，后续会进行哈希处理）
-    pub pssword: String,
+    pub password: String,
 }
 
 /// 用户登录响应

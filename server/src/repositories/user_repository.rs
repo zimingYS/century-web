@@ -1,3 +1,4 @@
+use crate::errors::AppError;
 use crate::models::entity::user_entity::UserEntity;
 use sqlx::PgPool;
 
@@ -20,10 +21,7 @@ impl UserRepository {
     /// 根据用户名查询用户。
     ///
     /// 如果用户不存在，则返回 None。
-    pub async fn find_by_username(
-        &self,
-        username: &str,
-    ) -> Result<Option<UserEntity>, sqlx::Error> {
+    pub async fn find_by_username(&self, username: &str) -> Result<Option<UserEntity>, AppError> {
         let user = sqlx::query_as::<_, UserEntity>(
             r#" SELECT id, username, password_hash, email, created_at, updated_at FROM users WHERE username = $1 "#
         ).bind(username).fetch_optional(&self.pool) .await?;

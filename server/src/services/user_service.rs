@@ -1,3 +1,4 @@
+use crate::errors::AppError;
 use crate::models::entity::user_entity::UserEntity;
 use crate::repositories::user_repository::UserRepository;
 
@@ -13,10 +14,7 @@ impl UserService {
     }
 
     /// 根据用户名查询用户
-    pub async fn find_by_username(
-        &self,
-        username: &str,
-    ) -> Result<Option<UserEntity>, sqlx::Error> {
+    pub async fn find_by_username(&self, username: &str) -> Result<Option<UserEntity>, AppError> {
         self.repository.find_by_username(username).await
     }
 }

@@ -1,7 +1,7 @@
+use crate::errors::AppError;
 use crate::models::user::LoginRequest;
 use crate::state::SharedAppState;
 use axum::extract::*;
-use axum::http::StatusCode;
 
 /// 处理用户登录请求。
 ///
@@ -19,15 +19,11 @@ use axum::http::StatusCode;
 pub async fn login(
     State(state): State<SharedAppState>,
     Json(request): Json<LoginRequest>,
-) -> Result<String, StatusCode> {
-    let user = state
-        .user_service
-        .find_by_username(&request.username)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+) -> Result<String, AppError> {
+    let user = state.user_service.find_by_username(&request.username).await?;
 
     match user {
         Some(user) => Ok(format!("找到用户：{}", user.username)),
-        None => Err(StatusCode::UNAUTHORIZED),
+        None => Err(AppError::NotFound(format!("用户 {} 不存在", request.username))),
     }
 }
